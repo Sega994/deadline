@@ -16,8 +16,9 @@ function App() {
     
     return [
       { id: 1, name: 'Сдать отчет по React', date: tomorrow.toISOString().split('T')[0] },
-      { id: 2, name: 'Подготовить презентацию', date: nextWeek.toISOString().split('T')[0] },
-      { id: 3, name: 'Закончить лабораторную работу', date: lastWeek.toISOString().split('T')[0] },
+      { id: 2, name: 'Сдать лабу Беловой', date: tomorrow.toISOString().split('T')[0] },
+      { id: 3, name: 'Подготовить презентацию', date: nextWeek.toISOString().split('T')[0] },
+      { id: 4, name: 'Закончить лабораторную работу', date: lastWeek.toISOString().split('T')[0] },
     ];
   });
 
