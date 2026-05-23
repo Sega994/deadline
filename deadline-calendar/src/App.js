@@ -77,10 +77,11 @@ function App() {
     setNewTaskDate('');
   };
 
-// Удаление
+  // Удаление
   const deleteTask = (id) => {
     setTasks(tasks.filter(task => task.id !== id));
   };
+  
   // Сортировка
   const sortedTasks = [...tasks].sort((a, b) => new Date(a.date) - new Date(b.date));
 
@@ -92,77 +93,246 @@ function App() {
     filteredTasks = sortedTasks.filter(task => isOverdue(task.date));
   }
 
-  return (
-    <div style={{ maxWidth: '700px', margin: '0 auto' }}>
-      <h1>📅 Календарь дедлайнов</h1>
-{/* Текущая дата */}
-      <div style={{ background: '#e9ecef', padding: '10px', borderRadius: '8px', marginBottom: '20px' }}>
-        🗓️ Сегодня: <strong>{currentDate}</strong>
-      </div>
-      {/* Форма добавления */}
-      <div style={{ border: '1px solid #ccc', padding: '15px', borderRadius: '8px', marginBottom: '20px', background: '#e9ecef' }}>
-        <h3>➕ Добавить задание</h3>
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-          <input
-            placeholder="Название задания"
-            value={newTaskName}
-            onChange={(e) => setNewTaskName(e.target.value)}
-            style={{ flex: 2, padding: '8px' }}
-          />
-          <input
-            type="date"
-            value={newTaskDate}
-            onChange={(e) => setNewTaskDate(e.target.value)}
-            style={{ padding: '8px' }}
-          />
-          <button
-            onClick={addTask}
-            style={{ padding: '8px 15px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
-          >
-            Добавить
-          </button>
-        </div>
-      </div>
-{/* Фильтры */}
-      <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
-        <button onClick={() => setFilter('all')} style={{ padding: '8px 15px', backgroundColor: filter === 'all' ? '#007bff' : '#6c757d', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Все задания</button>
-        <button onClick={() => setFilter('week')} style={{ padding: '8px 15px', backgroundColor: filter === 'week' ? '#007bff' : '#6c757d', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>На этой неделе</button>
-        <button onClick={() => setFilter('overdue')} style={{ padding: '8px 15px', backgroundColor: filter === 'overdue' ? '#dc3545' : '#6c757d', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Просроченные</button>
-      </div>
+  // Общий стиль для эффекта жидкого стекла
+  const glassStyle = {
+    background: 'rgba(255, 255, 255, 0.25)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
+    borderRadius: '16px',
+    border: '1px solid rgba(255, 255, 255, 0.3)',
+    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+  };
 
-      {/* Список заданий */}
-      {filteredTasks.length === 0 ? (
-        <p>Нет заданий</p>
-      ) : (
-        filteredTasks.map(task => {
-          const overdue = isOverdue(task.date);
-          const week = isThisWeek(task.date);
-          return (
-            <div
-              key={task.id}
+  return (
+    <div style={{
+      minHeight: '100vh',
+      padding: '20px',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      fontFamily: 'Arial, sans-serif'
+    }}>
+      <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+        {/* Заголовок с эффектом стекла */}
+        <h1 style={{
+          ...glassStyle,
+          textAlign: 'center',
+          padding: '20px',
+          marginBottom: '20px',
+          color: 'white',
+          textShadow: '0 2px 5px rgba(0,0,0,0.2)',
+          fontSize: '2.5rem'
+        }}>
+          📅 Календарь дедлайнов
+        </h1>
+
+        {/* Текущая дата с эффектом стекла */}
+        <div style={{
+          ...glassStyle,
+          padding: '15px',
+          marginBottom: '20px',
+          textAlign: 'center',
+          fontSize: '18px',
+          fontWeight: 'bold',
+          color: 'white'
+        }}>
+          🗓️ Сегодня: <strong>{currentDate}</strong>
+        </div>
+
+        {/* Форма добавления с эффектом стекла */}
+        <div style={{
+          ...glassStyle,
+          padding: '20px',
+          marginBottom: '20px'
+        }}>
+          <h3 style={{ margin: '0 0 15px 0', color: 'white' }}>➕ Добавить задание</h3>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <input
+              placeholder="Название задания"
+              value={newTaskName}
+              onChange={(e) => setNewTaskName(e.target.value)}
               style={{
-                border: '1px solid #ccc',
-                borderRadius: '8px',
-                padding: '15px',
-                marginBottom: '10px',
-                background: overdue ? '#f8d7da' : (week ? '#fff3cd' : 'white'),
-                borderLeft: overdue ? '5px solid #dc3545' : (week ? '5px solid #ffc107' : '5px solid #28a745')
+                flex: 2,
+                padding: '12px',
+                borderRadius: '12px',
+                border: 'none',
+                background: 'rgba(255, 255, 255, 0.9)',
+                fontSize: '14px',
+                outline: 'none'
+              }}
+            />
+            <input
+              type="date"
+              value={newTaskDate}
+              onChange={(e) => setNewTaskDate(e.target.value)}
+              style={{
+                padding: '12px',
+                borderRadius: '12px',
+                border: 'none',
+                background: 'rgba(255, 255, 255, 0.9)',
+                fontSize: '14px',
+                outline: 'none'
+              }}
+            />
+            <button
+              onClick={addTask}
+              style={{
+                padding: '12px 20px',
+                backgroundColor: '#5a67d8',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'scale(1.02)';
+                e.target.style.boxShadow = '0 6px 20px rgba(0,0,0,0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'scale(1)';
+                e.target.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
-                <div>
-                  <h3 style={{ margin: '0 0 5px 0' }}>{task.name}</h3>
-                  <p style={{ margin: 0, color: overdue ? '#dc3545' : '#666' }}>
-                    📅 Дедлайн: {new Date(task.date).toLocaleDateString('ru-RU')}
-                    {overdue && <span style={{ marginLeft: '10px', fontWeight: 'bold' }}>⚠️ ПРОСРОЧЕНО!</span>}
-                  </p>
+              Добавить
+            </button>
+          </div>
+        </div>
+
+        {/* Фильтры с эффектом стекла */}
+        <div style={{
+          display: 'flex',
+          gap: '10px',
+          marginBottom: '20px',
+          flexWrap: 'wrap'
+        }}>
+          <button
+            onClick={() => setFilter('all')}
+            style={{
+              ...glassStyle,
+              padding: '10px 20px',
+              backgroundColor: filter === 'all' ? 'rgba(90, 103, 216, 0.8)' : 'rgba(255, 255, 255, 0.2)',
+              color: 'white',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              borderRadius: '12px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              transition: 'all 0.3s'
+            }}
+          >
+            Все задания
+          </button>
+          <button
+            onClick={() => setFilter('week')}
+            style={{
+              ...glassStyle,
+              padding: '10px 20px',
+              backgroundColor: filter === 'week' ? 'rgba(90, 103, 216, 0.8)' : 'rgba(255, 255, 255, 0.2)',
+              color: 'white',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              borderRadius: '12px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              transition: 'all 0.3s'
+            }}
+          >
+            На этой неделе
+          </button>
+          <button
+            onClick={() => setFilter('overdue')}
+            style={{
+              ...glassStyle,
+              padding: '10px 20px',
+              backgroundColor: filter === 'overdue' ? 'rgba(220, 53, 69, 0.8)' : 'rgba(255, 255, 255, 0.2)',
+              color: 'white',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              borderRadius: '12px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              transition: 'all 0.3s'
+            }}
+          >
+            Просроченные
+          </button>
+        </div>
+
+        {/* Список заданий с эффектом стекла */}
+        {filteredTasks.length === 0 ? (
+          <div style={{
+            ...glassStyle,
+            padding: '40px',
+            textAlign: 'center',
+            color: 'white',
+            fontSize: '18px'
+          }}>
+            🎉 Нет заданий! Отдыхайте...
+          </div>
+        ) : (
+          filteredTasks.map(task => {
+            const overdue = isOverdue(task.date);
+            const week = isThisWeek(task.date);
+            return (
+              <div
+                key={task.id}
+                style={{
+                  ...glassStyle,
+                  padding: '15px',
+                  marginBottom: '10px',
+                  background: overdue 
+                    ? 'rgba(220, 53, 69, 0.3)' 
+                    : (week ? 'rgba(255, 193, 7, 0.3)' : 'rgba(255, 255, 255, 0.2)'),
+                  borderLeft: overdue 
+                    ? '4px solid #dc3545' 
+                    : (week ? '4px solid #ffc107' : '4px solid #28a745'),
+                  transition: 'transform 0.2s, box-shadow 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateX(5px)';
+                  e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateX(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 30px rgba(0,0,0,0.1)';
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <div>
+                    <h3 style={{ margin: '0 0 5px 0', color: 'white' }}>{task.name}</h3>
+                    <p style={{ margin: 0, color: overdue ? '#ffcccc' : '#e0e0e0' }}>
+                      📅 Дедлайн: {new Date(task.date).toLocaleDateString('ru-RU')}
+                      {overdue && <span style={{ marginLeft: '10px', fontWeight: 'bold', color: '#ff9999' }}>⚠️ ПРОСРОЧЕНО!</span>}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => deleteTask(task.id)}
+                    style={{
+                      backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                      color: 'white',
+                      border: 'none',
+                      padding: '8px 20px',
+                      borderRadius: '10px',
+                      cursor: 'pointer',
+                      fontWeight: 'bold',
+                      transition: 'all 0.2s',
+                      backdropFilter: 'blur(5px)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = 'rgba(220, 53, 69, 1)';
+                      e.target.style.transform = 'scale(1.02)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'rgba(220, 53, 69, 0.8)';
+                      e.target.style.transform = 'scale(1)';
+                    }}
+                  >
+                    Удалить
+                  </button>
                 </div>
-                <button onClick={() => deleteTask(task.id)} style={{ backgroundColor: '#dc3545', color: 'white', border: 'none', padding: '5px 15px', borderRadius: '5px', cursor: 'pointer' }}>Удалить</button>
               </div>
-            </div>
-          );
-        })
-      )}
+            );
+          })
+        )}
+      </div>
     </div>
   );
 }
