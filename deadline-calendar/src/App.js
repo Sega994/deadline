@@ -76,7 +76,10 @@ function App() {
     setNewTaskDate('');
   };
 
-
+// Удаление
+  const deleteTask = (id) => {
+    setTasks(tasks.filter(task => task.id !== id));
+  };
   // Сортировка
   const sortedTasks = [...tasks].sort((a, b) => new Date(a.date) - new Date(b.date));
 
