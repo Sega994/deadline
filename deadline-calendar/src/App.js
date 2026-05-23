@@ -119,7 +119,13 @@ function App() {
           </button>
         </div>
       </div>
-
+{/* Фильтры */}
+      <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
+        <button onClick={() => setFilter('all')} style={{ padding: '8px 15px', backgroundColor: filter === 'all' ? '#007bff' : '#6c757d', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Все задания</button>
+        <button onClick={() => setFilter('week')} style={{ padding: '8px 15px', backgroundColor: filter === 'week' ? '#007bff' : '#6c757d', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>На этой неделе</button>
+        <button onClick={() => setFilter('overdue')} style={{ padding: '8px 15px', backgroundColor: filter === 'overdue' ? '#dc3545' : '#6c757d', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Просроченные</button>
+      </div>
+      
       {/* Список заданий */}
       {filteredTasks.length === 0 ? (
         <p>Нет заданий</p>
