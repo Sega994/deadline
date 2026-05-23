@@ -94,7 +94,10 @@ function App() {
   return (
     <div style={{ maxWidth: '700px', margin: '0 auto' }}>
       <h1>📅 Календарь дедлайнов</h1>
-
+{/* Текущая дата */}
+      <div style={{ background: '#e9ecef', padding: '10px', borderRadius: '8px', marginBottom: '20px' }}>
+        🗓️ Сегодня: <strong>{currentDate}</strong>
+      </div>
       {/* Форма добавления */}
       <div style={{ border: '1px solid #ccc', padding: '15px', borderRadius: '8px', marginBottom: '20px', background: '#e9ecef' }}>
         <h3>➕ Добавить задание</h3>
@@ -125,7 +128,7 @@ function App() {
         <button onClick={() => setFilter('week')} style={{ padding: '8px 15px', backgroundColor: filter === 'week' ? '#007bff' : '#6c757d', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>На этой неделе</button>
         <button onClick={() => setFilter('overdue')} style={{ padding: '8px 15px', backgroundColor: filter === 'overdue' ? '#dc3545' : '#6c757d', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>Просроченные</button>
       </div>
-      
+
       {/* Список заданий */}
       {filteredTasks.length === 0 ? (
         <p>Нет заданий</p>
