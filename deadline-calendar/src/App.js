@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
 function App() {
-  // Загружаем из localStorage
   const [tasks, setTasks] = useState(() => {
     const saved = localStorage.getItem('deadlines');
     if (saved) return JSON.parse(saved);
-    // Начальные примеры
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
@@ -13,7 +11,7 @@ function App() {
     nextWeek.setDate(today.getDate() + 7);
     const lastWeek = new Date(today);
     lastWeek.setDate(today.getDate() - 5);
-    
+
     return [
       { id: 1, name: 'Сдать отчет по React', date: tomorrow.toISOString().split('T')[0] },
       { id: 2, name: 'Сдать лабу Беловой', date: tomorrow.toISOString().split('T')[0] },
@@ -26,30 +24,26 @@ function App() {
   const [newTaskDate, setNewTaskDate] = useState('');
   const [filter, setFilter] = useState('all');
 
-  // Сохраняем в localStorage
   useEffect(() => {
     localStorage.setItem('deadlines', JSON.stringify(tasks));
   }, [tasks]);
 
-  // Текущая дата
-  const today = new Date();
-  const currentDate = today.toLocaleDateString('ru-RU');
+  const todayDate = new Date();
+  const currentDate = todayDate.toLocaleDateString('ru-RU');
 
-  // Проверка просрочки
   const isOverdue = (dateStr) => {
     const taskDate = new Date(dateStr);
     taskDate.setHours(0, 0, 0, 0);
-    const todayDate = new Date();
-    todayDate.setHours(0, 0, 0, 0);
-    return taskDate < todayDate;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return taskDate < today;
   };
 
-  // Проверка на текущей неделе
   const isThisWeek = (dateStr) => {
     const taskDate = new Date(dateStr);
-    const todayDate = new Date();
-    const startOfWeek = new Date(todayDate);
-    startOfWeek.setDate(todayDate.getDate() - todayDate.getDay() + 1);
+    const today = new Date();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay() + 1);
     startOfWeek.setHours(0, 0, 0, 0);
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(startOfWeek.getDate() + 6);
@@ -57,7 +51,6 @@ function App() {
     return taskDate >= startOfWeek && taskDate <= endOfWeek;
   };
 
-  // Добавление
   const addTask = () => {
     if (newTaskName.trim() === '') {
       alert('Введите название задания');
@@ -77,15 +70,12 @@ function App() {
     setNewTaskDate('');
   };
 
-  // Удаление
   const deleteTask = (id) => {
     setTasks(tasks.filter(task => task.id !== id));
   };
-  
-  // Сортировка
+
   const sortedTasks = [...tasks].sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  // Фильтрация
   let filteredTasks = sortedTasks;
   if (filter === 'week') {
     filteredTasks = sortedTasks.filter(task => isThisWeek(task.date));
@@ -93,70 +83,79 @@ function App() {
     filteredTasks = sortedTasks.filter(task => isOverdue(task.date));
   }
 
-  // Общий стиль для эффекта жидкого стекла
+  // 🔥 УСИЛЕННЫЙ ЭФФЕКТ ЖИДКОГО СТЕКЛА (как на iPhone)
   const glassStyle = {
-    background: 'rgba(255, 255, 255, 0.25)',
-    backdropFilter: 'blur(10px)',
-    WebkitBackdropFilter: 'blur(10px)',
-    borderRadius: '16px',
-    border: '1px solid rgba(255, 255, 255, 0.3)',
-    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+    background: 'rgba(255, 255, 255, 0.2)',
+    backdropFilter: 'blur(15px) saturate(180%)',
+    WebkitBackdropFilter: 'blur(15px) saturate(180%)',
+    borderRadius: '28px',
+    border: '1px solid rgba(255, 255, 255, 0.4)',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
   };
 
   return (
     <div style={{
       minHeight: '100vh',
-      padding: '20px',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      fontFamily: 'Arial, sans-serif'
+      padding: '24px',
+      backgroundImage: 'url("/фон2.webp")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
     }}>
-      <div style={{ maxWidth: '700px', margin: '0 auto' }}>
-        {/* Заголовок с эффектом стекла */}
+      <div style={{ maxWidth: '720px', margin: '0 auto' }}>
+        
+        {/* Заголовок */}
         <h1 style={{
           ...glassStyle,
           textAlign: 'center',
-          padding: '20px',
-          marginBottom: '20px',
+          padding: '24px 20px',
+          marginBottom: '24px',
           color: 'white',
           textShadow: '0 2px 5px rgba(0,0,0,0.2)',
-          fontSize: '2.5rem'
+          fontSize: '2.2rem',
+          letterSpacing: '-0.5px',
+          fontWeight: '600'
         }}>
           📅 Календарь дедлайнов
         </h1>
 
-        {/* Текущая дата с эффектом стекла */}
+        {/* Текущая дата */}
         <div style={{
           ...glassStyle,
-          padding: '15px',
-          marginBottom: '20px',
+          padding: '18px',
+          marginBottom: '24px',
           textAlign: 'center',
           fontSize: '18px',
-          fontWeight: 'bold',
-          color: 'white'
+          fontWeight: '500',
+          color: 'white',
+          background: 'rgba(255, 255, 255, 0.15)',
         }}>
-          🗓️ Сегодня: <strong>{currentDate}</strong>
+          🗓️ Сегодня: <strong style={{ fontWeight: '600' }}>{currentDate}</strong>
         </div>
 
-        {/* Форма добавления с эффектом стекла */}
+        {/* Форма добавления */}
         <div style={{
           ...glassStyle,
-          padding: '20px',
-          marginBottom: '20px'
+          padding: '24px',
+          marginBottom: '24px',
+          background: 'rgba(255, 255, 255, 0.2)',
         }}>
-          <h3 style={{ margin: '0 0 15px 0', color: 'white' }}>➕ Добавить задание</h3>
-          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <h3 style={{ margin: '0 0 16px 0', color: 'white', fontSize: '1.3rem', fontWeight: '500' }}>➕ Добавить задание</h3>
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             <input
               placeholder="Название задания"
               value={newTaskName}
               onChange={(e) => setNewTaskName(e.target.value)}
               style={{
                 flex: 2,
-                padding: '12px',
-                borderRadius: '12px',
+                padding: '14px 16px',
+                borderRadius: '24px',
                 border: 'none',
                 background: 'rgba(255, 255, 255, 0.9)',
-                fontSize: '14px',
-                outline: 'none'
+                fontSize: '15px',
+                outline: 'none',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
               }}
             />
             <input
@@ -164,34 +163,36 @@ function App() {
               value={newTaskDate}
               onChange={(e) => setNewTaskDate(e.target.value)}
               style={{
-                padding: '12px',
-                borderRadius: '12px',
+                padding: '14px 16px',
+                borderRadius: '24px',
                 border: 'none',
                 background: 'rgba(255, 255, 255, 0.9)',
-                fontSize: '14px',
+                fontSize: '15px',
                 outline: 'none'
               }}
             />
             <button
               onClick={addTask}
               style={{
-                padding: '12px 20px',
-                backgroundColor: '#5a67d8',
+                padding: '14px 28px',
+                background: 'rgba(90, 103, 216, 0.9)',
+                backdropFilter: 'blur(4px)',
                 color: 'white',
-                border: 'none',
-                borderRadius: '12px',
+                border: '1px solid rgba(255,255,255,0.3)',
+                borderRadius: '32px',
                 cursor: 'pointer',
-                fontWeight: 'bold',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+                fontWeight: '600',
+                fontSize: '15px',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
               }}
               onMouseEnter={(e) => {
                 e.target.style.transform = 'scale(1.02)';
-                e.target.style.boxShadow = '0 6px 20px rgba(0,0,0,0.3)';
+                e.target.style.background = 'rgba(90, 103, 216, 1)';
               }}
               onMouseLeave={(e) => {
                 e.target.style.transform = 'scale(1)';
-                e.target.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
+                e.target.style.background = 'rgba(90, 103, 216, 0.9)';
               }}
             >
               Добавить
@@ -199,71 +200,51 @@ function App() {
           </div>
         </div>
 
-        {/* Фильтры с эффектом стекла */}
+        {/* Фильтры */}
         <div style={{
           display: 'flex',
-          gap: '10px',
-          marginBottom: '20px',
+          gap: '12px',
+          marginBottom: '28px',
           flexWrap: 'wrap'
         }}>
-          <button
-            onClick={() => setFilter('all')}
-            style={{
-              ...glassStyle,
-              padding: '10px 20px',
-              backgroundColor: filter === 'all' ? 'rgba(90, 103, 216, 0.8)' : 'rgba(255, 255, 255, 0.2)',
-              color: 'white',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              borderRadius: '12px',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              transition: 'all 0.3s'
-            }}
-          >
-            Все задания
-          </button>
-          <button
-            onClick={() => setFilter('week')}
-            style={{
-              ...glassStyle,
-              padding: '10px 20px',
-              backgroundColor: filter === 'week' ? 'rgba(90, 103, 216, 0.8)' : 'rgba(255, 255, 255, 0.2)',
-              color: 'white',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              borderRadius: '12px',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              transition: 'all 0.3s'
-            }}
-          >
-            На этой неделе
-          </button>
-          <button
-            onClick={() => setFilter('overdue')}
-            style={{
-              ...glassStyle,
-              padding: '10px 20px',
-              backgroundColor: filter === 'overdue' ? 'rgba(220, 53, 69, 0.8)' : 'rgba(255, 255, 255, 0.2)',
-              color: 'white',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              borderRadius: '12px',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              transition: 'all 0.3s'
-            }}
-          >
-            Просроченные
-          </button>
+          {[
+            { key: 'all', label: 'Все задания', color: '90, 103, 216' },
+            { key: 'week', label: 'На этой неделе', color: '90, 103, 216' },
+            { key: 'overdue', label: 'Просроченные', color: '220, 53, 69' }
+          ].map(btn => (
+            <button
+              key={btn.key}
+              onClick={() => setFilter(btn.key)}
+              style={{
+                ...glassStyle,
+                padding: '12px 24px',
+                background: filter === btn.key 
+                  ? `rgba(${btn.color}, 0.75)` 
+                  : 'rgba(255, 255, 255, 0.2)',
+                color: 'white',
+                border: '1px solid rgba(255, 255, 255, 0.4)',
+                borderRadius: '40px',
+                cursor: 'pointer',
+                fontWeight: '600',
+                fontSize: '14px',
+                transition: 'all 0.2s',
+                backdropFilter: filter === btn.key ? 'blur(8px)' : 'blur(12px)'
+              }}
+            >
+              {btn.label}
+            </button>
+          ))}
         </div>
 
-        {/* Список заданий с эффектом стекла */}
+        {/* Список заданий */}
         {filteredTasks.length === 0 ? (
           <div style={{
             ...glassStyle,
-            padding: '40px',
+            padding: '48px 24px',
             textAlign: 'center',
             color: 'white',
-            fontSize: '18px'
+            fontSize: '18px',
+            background: 'rgba(255,255,255,0.15)'
           }}>
             🎉 Нет заданий! Отдыхайте...
           </div>
@@ -276,52 +257,55 @@ function App() {
                 key={task.id}
                 style={{
                   ...glassStyle,
-                  padding: '15px',
-                  marginBottom: '10px',
+                  padding: '18px 20px',
+                  marginBottom: '12px',
                   background: overdue 
-                    ? 'rgba(220, 53, 69, 0.3)' 
+                    ? 'rgba(220, 53, 69, 0.35)' 
                     : (week ? 'rgba(255, 193, 7, 0.3)' : 'rgba(255, 255, 255, 0.2)'),
                   borderLeft: overdue 
-                    ? '4px solid #dc3545' 
-                    : (week ? '4px solid #ffc107' : '4px solid #28a745'),
-                  transition: 'transform 0.2s, box-shadow 0.2s'
+                    ? '4px solid #ff6b6b' 
+                    : (week ? '4px solid #ffd966' : '4px solid #6fcf97'),
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  cursor: 'pointer'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateX(5px)';
-                  e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.2)';
+                  e.currentTarget.style.transform = 'translateX(6px)';
+                  e.currentTarget.style.boxShadow = '0 12px 28px rgba(0,0,0,0.2)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateX(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 30px rgba(0,0,0,0.1)';
+                  e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.1)';
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
                   <div>
-                    <h3 style={{ margin: '0 0 5px 0', color: 'white' }}>{task.name}</h3>
-                    <p style={{ margin: 0, color: overdue ? '#ffcccc' : '#e0e0e0' }}>
+                    <h3 style={{ margin: '0 0 6px 0', color: 'white', fontWeight: '600', fontSize: '1.1rem' }}>{task.name}</h3>
+                    <p style={{ margin: 0, color: overdue ? '#ffe0e0' : '#f0f0f0', fontSize: '0.9rem' }}>
                       📅 Дедлайн: {new Date(task.date).toLocaleDateString('ru-RU')}
-                      {overdue && <span style={{ marginLeft: '10px', fontWeight: 'bold', color: '#ff9999' }}>⚠️ ПРОСРОЧЕНО!</span>}
+                      {overdue && <span style={{ marginLeft: '12px', fontWeight: 'bold', color: '#ffb3b3' }}>⚠️ ПРОСРОЧЕНО!</span>}
                     </p>
                   </div>
                   <button
                     onClick={() => deleteTask(task.id)}
                     style={{
-                      backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                      background: 'rgba(220, 53, 69, 0.85)',
+                      backdropFilter: 'blur(8px)',
                       color: 'white',
-                      border: 'none',
-                      padding: '8px 20px',
-                      borderRadius: '10px',
+                      border: '1px solid rgba(255,255,255,0.3)',
+                      padding: '8px 22px',
+                      borderRadius: '40px',
                       cursor: 'pointer',
-                      fontWeight: 'bold',
+                      fontWeight: '600',
+                      fontSize: '14px',
                       transition: 'all 0.2s',
-                      backdropFilter: 'blur(5px)'
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
                     }}
                     onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = 'rgba(220, 53, 69, 1)';
+                      e.target.style.background = 'rgba(220, 53, 69, 1)';
                       e.target.style.transform = 'scale(1.02)';
                     }}
                     onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = 'rgba(220, 53, 69, 0.8)';
+                      e.target.style.background = 'rgba(220, 53, 69, 0.85)';
                       e.target.style.transform = 'scale(1)';
                     }}
                   >
