@@ -83,14 +83,14 @@ function App() {
     filteredTasks = sortedTasks.filter(task => isOverdue(task.date));
   }
 
-  // 🔥 УСИЛЕННЫЙ ЭФФЕКТ ЖИДКОГО СТЕКЛА (как на iPhone)
+  // 🔥 ПРОЗРАЧНЫЙ эффект жидкого стекла — фон сильно просвечивает
   const glassStyle = {
-    background: 'rgba(255, 255, 255, 0.2)',
-    backdropFilter: 'blur(15px) saturate(180%)',
-    WebkitBackdropFilter: 'blur(15px) saturate(180%)',
+    background: 'rgba(255, 255, 255, 0.08)',
+    backdropFilter: 'blur(12px) saturate(180%)',
+    WebkitBackdropFilter: 'blur(12px) saturate(180%)',
     borderRadius: '28px',
-    border: '1px solid rgba(255, 255, 255, 0.4)',
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
   };
 
   return (
@@ -112,10 +112,11 @@ function App() {
           padding: '24px 20px',
           marginBottom: '24px',
           color: 'white',
-          textShadow: '0 2px 5px rgba(0,0,0,0.2)',
-          fontSize: '2.2rem',
+          textShadow: '0 2px 10px rgba(0,0,0,0.3)',
+          fontSize: '2rem',
           letterSpacing: '-0.5px',
-          fontWeight: '600'
+          fontWeight: '600',
+          background: 'rgba(255, 255, 255, 0.06)',
         }}>
           📅 Календарь дедлайнов
         </h1>
@@ -123,13 +124,13 @@ function App() {
         {/* Текущая дата */}
         <div style={{
           ...glassStyle,
-          padding: '18px',
+          padding: '16px',
           marginBottom: '24px',
           textAlign: 'center',
-          fontSize: '18px',
+          fontSize: '17px',
           fontWeight: '500',
           color: 'white',
-          background: 'rgba(255, 255, 255, 0.15)',
+          background: 'rgba(255, 255, 255, 0.05)',
         }}>
           🗓️ Сегодня: <strong style={{ fontWeight: '600' }}>{currentDate}</strong>
         </div>
@@ -139,9 +140,9 @@ function App() {
           ...glassStyle,
           padding: '24px',
           marginBottom: '24px',
-          background: 'rgba(255, 255, 255, 0.2)',
+          background: 'rgba(255, 255, 255, 0.06)',
         }}>
-          <h3 style={{ margin: '0 0 16px 0', color: 'white', fontSize: '1.3rem', fontWeight: '500' }}>➕ Добавить задание</h3>
+          <h3 style={{ margin: '0 0 16px 0', color: 'white', fontSize: '1.2rem', fontWeight: '500', opacity: 0.95 }}>➕ Добавить задание</h3>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             <input
               placeholder="Название задания"
@@ -152,10 +153,9 @@ function App() {
                 padding: '14px 16px',
                 borderRadius: '24px',
                 border: 'none',
-                background: 'rgba(255, 255, 255, 0.9)',
+                background: 'rgba(255, 255, 255, 0.85)',
                 fontSize: '15px',
                 outline: 'none',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
               }}
             />
             <input
@@ -166,33 +166,32 @@ function App() {
                 padding: '14px 16px',
                 borderRadius: '24px',
                 border: 'none',
-                background: 'rgba(255, 255, 255, 0.9)',
+                background: 'rgba(255, 255, 255, 0.85)',
                 fontSize: '15px',
-                outline: 'none'
+                outline: 'none',
               }}
             />
             <button
               onClick={addTask}
               style={{
                 padding: '14px 28px',
-                background: 'rgba(90, 103, 216, 0.9)',
+                background: 'rgba(90, 103, 216, 0.7)',
                 backdropFilter: 'blur(4px)',
                 color: 'white',
-                border: '1px solid rgba(255,255,255,0.3)',
+                border: '1px solid rgba(255,255,255,0.25)',
                 borderRadius: '32px',
                 cursor: 'pointer',
                 fontWeight: '600',
                 fontSize: '15px',
                 transition: 'all 0.2s ease',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
               }}
               onMouseEnter={(e) => {
                 e.target.style.transform = 'scale(1.02)';
-                e.target.style.background = 'rgba(90, 103, 216, 1)';
+                e.target.style.background = 'rgba(90, 103, 216, 0.85)';
               }}
               onMouseLeave={(e) => {
                 e.target.style.transform = 'scale(1)';
-                e.target.style.background = 'rgba(90, 103, 216, 0.9)';
+                e.target.style.background = 'rgba(90, 103, 216, 0.7)';
               }}
             >
               Добавить
@@ -217,18 +216,17 @@ function App() {
               onClick={() => setFilter(btn.key)}
               style={{
                 ...glassStyle,
-                padding: '12px 24px',
+                padding: '10px 22px',
                 background: filter === btn.key 
-                  ? `rgba(${btn.color}, 0.75)` 
-                  : 'rgba(255, 255, 255, 0.2)',
+                  ? `rgba(${btn.color}, 0.55)` 
+                  : 'rgba(255, 255, 255, 0.05)',
                 color: 'white',
-                border: '1px solid rgba(255, 255, 255, 0.4)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
                 borderRadius: '40px',
                 cursor: 'pointer',
-                fontWeight: '600',
+                fontWeight: '500',
                 fontSize: '14px',
                 transition: 'all 0.2s',
-                backdropFilter: filter === btn.key ? 'blur(8px)' : 'blur(12px)'
               }}
             >
               {btn.label}
@@ -243,8 +241,8 @@ function App() {
             padding: '48px 24px',
             textAlign: 'center',
             color: 'white',
-            fontSize: '18px',
-            background: 'rgba(255,255,255,0.15)'
+            fontSize: '17px',
+            background: 'rgba(255,255,255,0.04)'
           }}>
             🎉 Нет заданий! Отдыхайте...
           </div>
@@ -260,27 +258,30 @@ function App() {
                   padding: '18px 20px',
                   marginBottom: '12px',
                   background: overdue 
-                    ? 'rgba(220, 53, 69, 0.35)' 
-                    : (week ? 'rgba(255, 193, 7, 0.3)' : 'rgba(255, 255, 255, 0.2)'),
+                    ? 'rgba(220, 53, 69, 0.2)' 
+                    : (week ? 'rgba(255, 193, 7, 0.15)' : 'rgba(255, 255, 255, 0.05)'),
                   borderLeft: overdue 
-                    ? '4px solid #ff6b6b' 
-                    : (week ? '4px solid #ffd966' : '4px solid #6fcf97'),
+                    ? '4px solid rgba(255, 107, 107, 0.8)' 
+                    : (week ? '4px solid rgba(255, 217, 102, 0.8)' : '4px solid rgba(111, 207, 151, 0.8)'),
                   transition: 'transform 0.2s, box-shadow 0.2s',
-                  cursor: 'pointer'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateX(6px)';
-                  e.currentTarget.style.boxShadow = '0 12px 28px rgba(0,0,0,0.2)';
+                  e.currentTarget.style.background = overdue 
+                    ? 'rgba(220, 53, 69, 0.3)' 
+                    : (week ? 'rgba(255, 193, 7, 0.25)' : 'rgba(255, 255, 255, 0.1)');
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateX(0)';
-                  e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.1)';
+                  e.currentTarget.style.background = overdue 
+                    ? 'rgba(220, 53, 69, 0.2)' 
+                    : (week ? 'rgba(255, 193, 7, 0.15)' : 'rgba(255, 255, 255, 0.05)');
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
                   <div>
-                    <h3 style={{ margin: '0 0 6px 0', color: 'white', fontWeight: '600', fontSize: '1.1rem' }}>{task.name}</h3>
-                    <p style={{ margin: 0, color: overdue ? '#ffe0e0' : '#f0f0f0', fontSize: '0.9rem' }}>
+                    <h3 style={{ margin: '0 0 6px 0', color: 'white', fontWeight: '600', fontSize: '1.05rem', textShadow: '0 1px 2px rgba(0,0,0,0.2)' }}>{task.name}</h3>
+                    <p style={{ margin: 0, color: 'rgba(255,255,255,0.85)', fontSize: '0.85rem' }}>
                       📅 Дедлайн: {new Date(task.date).toLocaleDateString('ru-RU')}
                       {overdue && <span style={{ marginLeft: '12px', fontWeight: 'bold', color: '#ffb3b3' }}>⚠️ ПРОСРОЧЕНО!</span>}
                     </p>
@@ -288,24 +289,23 @@ function App() {
                   <button
                     onClick={() => deleteTask(task.id)}
                     style={{
-                      background: 'rgba(220, 53, 69, 0.85)',
-                      backdropFilter: 'blur(8px)',
+                      background: 'rgba(220, 53, 69, 0.7)',
+                      backdropFilter: 'blur(4px)',
                       color: 'white',
-                      border: '1px solid rgba(255,255,255,0.3)',
-                      padding: '8px 22px',
+                      border: '1px solid rgba(255,255,255,0.2)',
+                      padding: '8px 20px',
                       borderRadius: '40px',
                       cursor: 'pointer',
                       fontWeight: '600',
-                      fontSize: '14px',
+                      fontSize: '13px',
                       transition: 'all 0.2s',
-                      boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
                     }}
                     onMouseEnter={(e) => {
-                      e.target.style.background = 'rgba(220, 53, 69, 1)';
+                      e.target.style.background = 'rgba(220, 53, 69, 0.9)';
                       e.target.style.transform = 'scale(1.02)';
                     }}
                     onMouseLeave={(e) => {
-                      e.target.style.background = 'rgba(220, 53, 69, 0.85)';
+                      e.target.style.background = 'rgba(220, 53, 69, 0.7)';
                       e.target.style.transform = 'scale(1)';
                     }}
                   >
