@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
 function App() {
+  // Загружаем задания из localStorage
   const [tasks, setTasks] = useState(() => {
     const saved = localStorage.getItem('deadlines');
     if (saved) return JSON.parse(saved);
+    // Начальные примеры
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
@@ -11,46 +13,50 @@ function App() {
     nextWeek.setDate(today.getDate() + 7);
     const lastWeek = new Date(today);
     lastWeek.setDate(today.getDate() - 5);
-
+    
     return [
       { id: 1, name: 'Сдать отчет по React', date: tomorrow.toISOString().split('T')[0] },
-      { id: 2, name: 'Сдать лабу Беловой', date: tomorrow.toISOString().split('T')[0] },
-      { id: 3, name: 'Подготовить презентацию', date: nextWeek.toISOString().split('T')[0] },
-      { id: 4, name: 'Закончить лабораторную работу', date: lastWeek.toISOString().split('T')[0] },
+      { id: 2, name: 'Подготовить презентацию', date: nextWeek.toISOString().split('T')[0] },
+      { id: 3, name: 'Закончить лабораторную работу', date: lastWeek.toISOString().split('T')[0] },
     ];
   });
 
   const [newTaskName, setNewTaskName] = useState('');
   const [newTaskDate, setNewTaskDate] = useState('');
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState('all'); // all, week, overdue
 
+  // Сохраняем в localStorage
   useEffect(() => {
     localStorage.setItem('deadlines', JSON.stringify(tasks));
   }, [tasks]);
 
-  const todayDate = new Date();
-  const currentDate = todayDate.toLocaleDateString('ru-RU');
+  // Текущая дата
+  const today = new Date();
+  const currentDate = today.toLocaleDateString('ru-RU');
 
+  // Проверка, просрочено ли задание
   const isOverdue = (dateStr) => {
     const taskDate = new Date(dateStr);
     taskDate.setHours(0, 0, 0, 0);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return taskDate < today;
+    const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
+    return taskDate < todayDate;
   };
 
+  // Проверка, на текущей неделе ли задание
   const isThisWeek = (dateStr) => {
     const taskDate = new Date(dateStr);
-    const today = new Date();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay() + 1);
+    const todayDate = new Date();
+    const startOfWeek = new Date(todayDate);
+    startOfWeek.setDate(todayDate.getDate() - todayDate.getDay() + 1); // Понедельник
     startOfWeek.setHours(0, 0, 0, 0);
     const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6);
+    endOfWeek.setDate(startOfWeek.getDate() + 6); // Воскресенье
     endOfWeek.setHours(23, 59, 59, 999);
     return taskDate >= startOfWeek && taskDate <= endOfWeek;
   };
 
+  // Добавление задания
   const addTask = () => {
     if (newTaskName.trim() === '') {
       alert('Введите название задания');
@@ -70,12 +76,15 @@ function App() {
     setNewTaskDate('');
   };
 
+  // Удаление задания
   const deleteTask = (id) => {
     setTasks(tasks.filter(task => task.id !== id));
   };
 
+  // Сортировка по дате (ближайшие сверху)
   const sortedTasks = [...tasks].sort((a, b) => new Date(a.date) - new Date(b.date));
 
+  // Фильтрация
   let filteredTasks = sortedTasks;
   if (filter === 'week') {
     filteredTasks = sortedTasks.filter(task => isThisWeek(task.date));
@@ -83,240 +92,107 @@ function App() {
     filteredTasks = sortedTasks.filter(task => isOverdue(task.date));
   }
 
-  // 🔥 ПРОЗРАЧНЫЙ эффект жидкого стекла — фон сильно просвечивает
-  const glassStyle = {
-    background: 'rgba(255, 255, 255, 0.08)',
-    backdropFilter: 'blur(12px) saturate(180%)',
-    WebkitBackdropFilter: 'blur(12px) saturate(180%)',
-    borderRadius: '28px',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-  };
-
   return (
-    <div style={{
-      minHeight: '100vh',
-      padding: '24px',
-      backgroundImage: 'url("/фон2.webp")',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundAttachment: 'fixed',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
-    }}>
-      <div style={{ maxWidth: '720px', margin: '0 auto' }}>
-        
-        {/* Заголовок */}
-        <h1 style={{
-          ...glassStyle,
-          textAlign: 'center',
-          padding: '24px 20px',
-          marginBottom: '24px',
-          color: 'white',
-          textShadow: '0 2px 10px rgba(0,0,0,0.3)',
-          fontSize: '2rem',
-          letterSpacing: '-0.5px',
-          fontWeight: '600',
-          background: 'rgba(255, 255, 255, 0.06)',
-        }}>
-          📅 Календарь дедлайнов
-        </h1>
-
-        {/* Текущая дата */}
-        <div style={{
-          ...glassStyle,
-          padding: '16px',
-          marginBottom: '24px',
-          textAlign: 'center',
-          fontSize: '17px',
-          fontWeight: '500',
-          color: 'white',
-          background: 'rgba(255, 255, 255, 0.05)',
-        }}>
-          🗓️ Сегодня: <strong style={{ fontWeight: '600' }}>{currentDate}</strong>
-        </div>
-
-        {/* Форма добавления */}
-        <div style={{
-          ...glassStyle,
-          padding: '24px',
-          marginBottom: '24px',
-          background: 'rgba(255, 255, 255, 0.06)',
-        }}>
-          <h3 style={{ margin: '0 0 16px 0', color: 'white', fontSize: '1.2rem', fontWeight: '500', opacity: 0.95 }}>➕ Добавить задание</h3>
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-            <input
-              placeholder="Название задания"
-              value={newTaskName}
-              onChange={(e) => setNewTaskName(e.target.value)}
-              style={{
-                flex: 2,
-                padding: '14px 16px',
-                borderRadius: '24px',
-                border: 'none',
-                background: 'rgba(255, 255, 255, 0.85)',
-                fontSize: '15px',
-                outline: 'none',
-              }}
-            />
-            <input
-              type="date"
-              value={newTaskDate}
-              onChange={(e) => setNewTaskDate(e.target.value)}
-              style={{
-                padding: '14px 16px',
-                borderRadius: '24px',
-                border: 'none',
-                background: 'rgba(255, 255, 255, 0.85)',
-                fontSize: '15px',
-                outline: 'none',
-              }}
-            />
-            <button
-              onClick={addTask}
-              style={{
-                padding: '14px 28px',
-                background: 'rgba(90, 103, 216, 0.7)',
-                backdropFilter: 'blur(4px)',
-                color: 'white',
-                border: '1px solid rgba(255,255,255,0.25)',
-                borderRadius: '32px',
-                cursor: 'pointer',
-                fontWeight: '600',
-                fontSize: '15px',
-                transition: 'all 0.2s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'scale(1.02)';
-                e.target.style.background = 'rgba(90, 103, 216, 0.85)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'scale(1)';
-                e.target.style.background = 'rgba(90, 103, 216, 0.7)';
-              }}
-            >
-              Добавить
-            </button>
-          </div>
-        </div>
-
-        {/* Фильтры */}
-        <div style={{
-          display: 'flex',
-          gap: '12px',
-          marginBottom: '28px',
-          flexWrap: 'wrap'
-        }}>
-          {[
-            { key: 'all', label: 'Все задания', color: '90, 103, 216' },
-            { key: 'week', label: 'На этой неделе', color: '90, 103, 216' },
-            { key: 'overdue', label: 'Просроченные', color: '220, 53, 69' }
-          ].map(btn => (
-            <button
-              key={btn.key}
-              onClick={() => setFilter(btn.key)}
-              style={{
-                ...glassStyle,
-                padding: '10px 22px',
-                background: filter === btn.key 
-                  ? `rgba(${btn.color}, 0.55)` 
-                  : 'rgba(255, 255, 255, 0.05)',
-                color: 'white',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '40px',
-                cursor: 'pointer',
-                fontWeight: '500',
-                fontSize: '14px',
-                transition: 'all 0.2s',
-              }}
-            >
-              {btn.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Список заданий */}
-        {filteredTasks.length === 0 ? (
-          <div style={{
-            ...glassStyle,
-            padding: '48px 24px',
-            textAlign: 'center',
-            color: 'white',
-            fontSize: '17px',
-            background: 'rgba(255,255,255,0.04)'
-          }}>
-            🎉 Нет заданий! Отдыхайте...
-          </div>
-        ) : (
-          filteredTasks.map(task => {
-            const overdue = isOverdue(task.date);
-            const week = isThisWeek(task.date);
-            return (
-              <div
-                key={task.id}
-                style={{
-                  ...glassStyle,
-                  padding: '18px 20px',
-                  marginBottom: '12px',
-                  background: overdue 
-                    ? 'rgba(220, 53, 69, 0.2)' 
-                    : (week ? 'rgba(255, 193, 7, 0.15)' : 'rgba(255, 255, 255, 0.05)'),
-                  borderLeft: overdue 
-                    ? '4px solid rgba(255, 107, 107, 0.8)' 
-                    : (week ? '4px solid rgba(255, 217, 102, 0.8)' : '4px solid rgba(111, 207, 151, 0.8)'),
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateX(6px)';
-                  e.currentTarget.style.background = overdue 
-                    ? 'rgba(220, 53, 69, 0.3)' 
-                    : (week ? 'rgba(255, 193, 7, 0.25)' : 'rgba(255, 255, 255, 0.1)');
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateX(0)';
-                  e.currentTarget.style.background = overdue 
-                    ? 'rgba(220, 53, 69, 0.2)' 
-                    : (week ? 'rgba(255, 193, 7, 0.15)' : 'rgba(255, 255, 255, 0.05)');
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-                  <div>
-                    <h3 style={{ margin: '0 0 6px 0', color: 'white', fontWeight: '600', fontSize: '1.05rem', textShadow: '0 1px 2px rgba(0,0,0,0.2)' }}>{task.name}</h3>
-                    <p style={{ margin: 0, color: 'rgba(255,255,255,0.85)', fontSize: '0.85rem' }}>
-                      📅 Дедлайн: {new Date(task.date).toLocaleDateString('ru-RU')}
-                      {overdue && <span style={{ marginLeft: '12px', fontWeight: 'bold', color: '#ffb3b3' }}>⚠️ ПРОСРОЧЕНО!</span>}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => deleteTask(task.id)}
-                    style={{
-                      background: 'rgba(220, 53, 69, 0.7)',
-                      backdropFilter: 'blur(4px)',
-                      color: 'white',
-                      border: '1px solid rgba(255,255,255,0.2)',
-                      padding: '8px 20px',
-                      borderRadius: '40px',
-                      cursor: 'pointer',
-                      fontWeight: '600',
-                      fontSize: '13px',
-                      transition: 'all 0.2s',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = 'rgba(220, 53, 69, 0.9)';
-                      e.target.style.transform = 'scale(1.02)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'rgba(220, 53, 69, 0.7)';
-                      e.target.style.transform = 'scale(1)';
-                    }}
-                  >
-                    Удалить
-                  </button>
-                </div>
-              </div>
-            );
-          })
-        )}
+    <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+      <h1>📅 Календарь дедлайнов</h1>
+      
+      {/* Текущая дата */}
+      <div style={{ background: '#e9ecef', padding: '10px', borderRadius: '8px', marginBottom: '20px' }}>
+        🗓️ Сегодня: <strong>{currentDate}</strong>
       </div>
+
+      {/* Форма добавления */}
+      <div style={{ border: '1px solid #ccc', padding: '15px', borderRadius: '8px', marginBottom: '20px', background: '#e9ecef' }}>
+        <h3>➕ Добавить задание</h3>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <input
+            placeholder="Название задания"
+            value={newTaskName}
+            onChange={(e) => setNewTaskName(e.target.value)}
+            style={{ flex: 2, padding: '8px' }}
+          />
+          <input
+            type="date"
+            value={newTaskDate}
+            onChange={(e) => setNewTaskDate(e.target.value)}
+            style={{ padding: '8px' }}
+          />
+          <button
+            onClick={addTask}
+            style={{ padding: '8px 15px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+          >
+            Добавить
+          </button>
+        </div>
+      </div>
+
+      {/* Фильтры */}
+      <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
+        <button
+          onClick={() => setFilter('all')}
+          style={{ padding: '8px 15px', backgroundColor: filter === 'all' ? '#007bff' : '#6c757d', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+        >
+          Все задания
+        </button>
+        <button
+          onClick={() => setFilter('week')}
+          style={{ padding: '8px 15px', backgroundColor: filter === 'week' ? '#007bff' : '#6c757d', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+        >
+          На этой неделе
+        </button>
+        <button
+          onClick={() => setFilter('overdue')}
+          style={{ padding: '8px 15px', backgroundColor: filter === 'overdue' ? '#dc3545' : '#6c757d', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+        >
+          Просроченные
+        </button>
+      </div>
+
+      {/* Список заданий */}
+      {filteredTasks.length === 0 ? (
+        <p>Нет заданий</p>
+      ) : (
+        filteredTasks.map(task => {
+          const overdue = isOverdue(task.date);
+          const week = isThisWeek(task.date);
+          return (
+            <div
+              key={task.id}
+              style={{
+                border: '1px solid #ccc',
+                borderRadius: '8px',
+                padding: '15px',
+                marginBottom: '10px',
+                background: overdue ? '#f8d7da' : (week ? '#fff3cd' : 'white'),
+                borderLeft: overdue ? '5px solid #dc3545' : (week ? '5px solid #ffc107' : '5px solid #28a745')
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+                <div>
+                  <h3 style={{ margin: '0 0 5px 0' }}>{task.name}</h3>
+                  <p style={{ margin: 0, color: overdue ? '#dc3545' : '#666' }}>
+                    📅 Дедлайн: {new Date(task.date).toLocaleDateString('ru-RU')}
+                    {overdue && <span style={{ marginLeft: '10px', fontWeight: 'bold' }}>⚠️ ПРОСРОЧЕНО!</span>}
+                  </p>
+                </div>
+                <button
+                  onClick={() => deleteTask(task.id)}
+                  style={{
+                    backgroundColor: '#dc3545',
+                    color: 'white',
+                    border: 'none',
+                    padding: '5px 15px',
+                    borderRadius: '5px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Удалить
+                </button>
+              </div>
+            </div>
+          );
+        })
+      )}
     </div>
   );
 }
